@@ -1,0 +1,92 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+<MudThemeProvider Theme="MyDarkTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@code
+{
+    private bool _themeManagerOpen;
+    bool _drawerOpen;
+
+    MudTheme MyDarkTheme { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() =>
+        {
+            MyDarkTheme = new MudTheme()
+            {
+                Palette = new Palette()
+                {
+                    AppbarBackground = "#27272f",
+                    AppbarText = "rgba(255,255,255, 0.70)",
+                    Black = "#27272f",
+                    Background = "#32333d",
+                    BackgroundGrey = "#27272f",
+                    Surface = "#373740",
+                    DrawerBackground = "#27272f",
+                    DrawerText = "rgba(255,255,255, 0.50)",
+                    DrawerIcon = "rgba(255,255,255, 0.50)",
+                    TextPrimary = "rgba(255,255,255, 0.70)",
+                    TextSecondary = "rgba(255,255,255, 0.50)",
+                    ActionDefault = "#adadb1",
+                    ActionDisabled = "rgba(255,255,255, 0.26)",
+                    ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+                    Divider = "rgba(255,255,255, 0.12)",
+                    DividerLight = "rgba(255,255,255, 0.06)",
+                    TableLines = "rgba(255,255,255, 0.12)",
+                    LinesDefault = "rgba(255,255,255, 0.12)",
+                    LinesInputs = "rgba(255,255,255, 0.3)",
+                    TextDisabled = "rgba(255,255,255, 0.2)"
+                }
+            };
+
+            MyDarkTheme.Typography.H1.FontFamily = new List<string> { "Dancing Script", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.H2.FontFamily = new List<string> { "Dancing Script", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.H3.FontFamily = new List<string> { "Dancing Script", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.H4.FontFamily = new List<string> { "Dancing Script", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.H5.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.H6.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+
+            MyDarkTheme.Typography.Body1.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.Body2.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+
+            MyDarkTheme.Typography.Button.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.Caption.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.Subtitle1.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+            MyDarkTheme.Typography.Subtitle2.FontFamily = new List<string> { "Montserrat", "sans-serif" }.ToArray();
+        });
+    }
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+    }
+}

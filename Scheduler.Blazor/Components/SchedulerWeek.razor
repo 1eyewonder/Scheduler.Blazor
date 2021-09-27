@@ -1,0 +1,33 @@
+﻿@using MudBlazor.Utilities
+@typeparam T
+
+@{
+    var column = "1fr";
+    for (var i = 0; i < DaysInWeek - 1; i++)
+    {
+        column += " 1fr";
+    }
+
+    var myStyle = $"display: inline-grid; grid-template-columns: repeat({DaysInWeek}, minmax(0, 1fr));";
+
+    <MudContainer Style="@myStyle" 
+                  Class="pa-0"
+                  Fixed="true">
+        @{
+            for (var i = 0; i < DaysInWeek; i++)
+            {
+                var date = StartOfWeek.AddDays(i);
+                <SchedulerDay T="T"
+                              Date="date"
+                              AppointmentVariant="@AppointmentVariant"
+                              Appointments="@(Appointments
+                                                .Where(x => date >= x.Start &&
+                                                            date <= x.End)
+                                                .ToList())">
+
+                </SchedulerDay>
+            }
+        }
+    </MudContainer>
+}
+

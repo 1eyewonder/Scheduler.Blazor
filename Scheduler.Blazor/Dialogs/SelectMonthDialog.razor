@@ -1,0 +1,47 @@
+﻿<MudDialog>
+    <DialogContent>
+        @if (_openTo == OpenTo.Year)
+        {
+            <YearPicker @bind-SelectedDate="@SelectedDate" 
+                        OnYearSelect="ShowMonth"/>
+        }
+        else
+        {
+            <MonthPicker @bind-SelectedDate="@SelectedDate" 
+                         OnYearSelect="ShowYear"
+                         Variant="Variant.Outlined"></MonthPicker>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="SelectMonth"
+                   Color="Color.Primary"
+                   Class="my-2"
+                   FullWidth="true">
+            <MudText Typo="Typo.h5">
+                Ok
+            </MudText>
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public DateTime SelectedDate { get; set; }
+
+    private OpenTo _openTo = OpenTo.Month;
+
+    private void SelectMonth()
+    {
+         MudDialog.Close(DialogResult.Ok(SelectedDate));
+    }
+
+    private void ShowYear(DateTime year)
+    {
+        _openTo = OpenTo.Year;
+    }
+
+    private void ShowMonth(DateTime month)
+    {
+        _openTo = OpenTo.Month;
+    }
+}

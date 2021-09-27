@@ -1,0 +1,65 @@
+﻿@typeparam T
+@inherits MudBlazor.MudBaseButton
+@inject ISnackbar _snackbar
+
+<MudCard Square="true"
+         Outlined="true"
+         Elevation="0">
+
+    <MudCardHeader Class="px-0">
+        <MudButton OnClick="@(() => _snackbar.Add($"Hello from {Date.ToString("M")}"))"
+                   DisableElevation="true"
+                   Class="px-0">
+            <MudText Class="px-0">
+                @Date.Day
+            </MudText>
+        </MudButton>
+    </MudCardHeader>
+
+    <MudCardContent Class="pa-0 ma-0">
+        <MudGrid Spacing="0"
+                 Class="d-flex d-flex align-top">
+                @{
+                    var appointmentCount = 1;
+                    foreach (var appointment in Appointments)
+                    {
+                        if (appointmentCount > MaxVisibleAppointments)
+                        {
+                            // Show more
+                            <MudItem xs="12" Class="my-0">
+                                <MudButton Variant="@AppointmentVariant"
+                                           Color="@appointment.Color"
+                                           FullWidth="true"
+                                           DisableElevation="true"
+                                           Class="rounded-0 d-flex flex-shrink-1"
+                                           OnClick="@(() => _snackbar.Add($"Hello from the show more on {Date.ToString("M")}"))">
+                                    <MudText Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        Show More + (@(Appointments.Count - MaxVisibleAppointments))
+                                    </MudText>
+                                </MudButton>
+                            </MudItem>
+
+                            break;
+                        }
+
+                        <MudItem xs="12" Class="my-0">
+                            <MudButton Variant="@AppointmentVariant"
+                                       Color="@appointment.Color"
+                                       FullWidth="true"
+                                       DisableElevation="true"
+                                       Class="rounded-0 d-flex flex-shrink-1"
+                                       OnClick="@(() => _snackbar.Add($"Hello from {appointment.Title} on {Date.ToString("M")}"))">
+                                <MudText Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    @appointment.Title
+                                </MudText>
+                                
+                            </MudButton>
+                        </MudItem>
+                        appointmentCount++;
+                    }
+                }
+            </MudGrid>
+    </MudCardContent>
+</MudCard>
+
+

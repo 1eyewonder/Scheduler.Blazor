@@ -1,0 +1,32 @@
+﻿@page "/"
+
+<SchedulerMonth T="Appointment"
+                Appointments="appointments"
+                AppointmentVariant="Variant.Text"
+                SelectedDate="DateTime.Now" />
+
+@code{
+
+    IList<IAppointment> appointments = new List<IAppointment>
+{
+            new Appointment { Start = DateTime.Today.AddDays(-6), End = DateTime.Today.AddDays(-5), Title = "BirthdayBirthdayBirthdayBirthdayBirthday"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Day off"},
+            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Something else", Color = Color.Secondary},
+            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Something else 2"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(2), Title = "Something else 3"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(4), Title = "Something else 4"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(5), Title = "Something else 5"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(5), Title = "Something else 6"},
+            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(6), Title = "Something else 7"},
+            //new AppointmentData { Start = DateTime.Today.AddDays(-10), End = DateTime.Today.AddDays(-8), Text = "Work from home" },
+            //new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(12), Text = "Online meeting" },
+            //new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(13), Text = "Skype call" },
+            //new AppointmentData { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(14).AddMinutes(30), Text = "Dentist appointment" },
+            //new AppointmentData { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
+        };
+
+}
