@@ -1,16 +1,13 @@
-﻿@using Scheduler.Blazor.Dialogs
-@using Scheduler.Blazor.Enums
+﻿@using Scheduler.Blazor.Enums
 @using Scheduler.Blazor.Helpers
 @typeparam T
-
-@inject IDialogService _dialogService
 
 <MudContainer Fixed="true">
     <MudToolBar Class="my-3">
         <MudButtonGroup Variant="@Variant">
-            <MudButton OnClick="SubtractMonthFromDate">Previous</MudButton>
-            <MudButton OnClick="AddMonthToDate">Next</MudButton>
-            <MudButton OnClick="SelectToday">
+            <MudButton OnClick="@SubtractMonthFromDate">Previous</MudButton>
+            <MudButton OnClick="@AddMonthToDate">Next</MudButton>
+            <MudButton OnClick="@SelectToday">
                 Today
             </MudButton>
         </MudButtonGroup>
@@ -39,51 +36,9 @@
                        FirstSundayOfWeek="@(StartOfMonth .AddDays(7 * i) .GetPrevious(DayOfWeek.Sunday))"
                        AppointmentVariant="@AppointmentVariant"
                        Appointments="@(Appointments .Where(x => (x.Start, x.End) .Overlaps((StartOfMonth.AddDays(7 * i).GetPrevious(DayOfWeek.Sunday), 
-                                         StartOfMonth.AddDays(7 * i).GetNext(DayOfWeek.Saturday)))) .ToList())">
+                                         StartOfMonth.AddDays(7 * i).GetNext(DayOfWeek.Saturday)))) .ToList())"
+                       OnAppointmentClick="@OnAppointmentClick"
+                       OnDayClick="@OnDayClick">
         </SchedulerWeek>
     }
 </MudContainer>
-
-@code {
-    private async Task SelectedMonthDialog()
-    {
-        var parameters = new DialogParameters
-        {
-            { "SelectedDate", SelectedDate }
-        };
-
-        var dialog = _dialogService.Show<SelectMonthDialog>("Select Month", parameters, new DialogOptions
-        {
-            NoHeader = true,
-            FullWidth = true,
-            CloseButton = false
-        });
-
-        var result = await dialog.Result;
-        if (result is not null)
-        {
-            SelectedDate = (DateTime)result.Data;
-        }
-    }
-
-    private void SelectToday()
-    {
-        SelectedDate = DateTime.Now;
-    }
-
-    private async Task AddMonthToDate()
-    {
-        var newDate = new DateTime(SelectedDate.Ticks).AddMonths(1);
-        SelectedDate = newDate;
-        await SelectedDateChanged.InvokeAsync(newDate);
-        StateHasChanged();
-    }
-
-    private async Task SubtractMonthFromDate()
-    {
-        var newDate = new DateTime(SelectedDate.Ticks).AddMonths(-1);
-        SelectedDate = newDate;
-        await SelectedDateChanged.InvokeAsync(newDate);
-        StateHasChanged();
-    }
-}

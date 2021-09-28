@@ -1,6 +1,4 @@
-﻿@inject ISnackbar _snackbar
-
-<div class="d-flex justify-center my-3">
+﻿<div class="d-flex justify-center my-3">
     <MudIconButton Icon="@Icons.TwoTone.ArrowLeft" 
                    OnClick="@(async() => await SubtractYearFromDate())"/>
     <MudButton OnClick="@(async () => await OnYearSelect.InvokeAsync(SelectedDate))">
@@ -14,7 +12,7 @@
 <div>
     <MudContainer Style="display: inline-grid; grid-template-columns: repeat(3, minmax(0, 1fr));"
                   Fixed="true">
-        @foreach (var month in DateService.GetAllMonths(SelectedDate))
+        @foreach (var month in DateTimeService.GetAllMonths(SelectedDate))
         {
             if (month.Month == SelectedDate.Month)
             {
@@ -24,7 +22,7 @@
                            DisableElevation="true"
                            OnClick="@(async () => await SetMonth(month))">
                     <MudText Typo="Typo.h5">
-                        @DateService.GetAbbreviatedMonthName(month)
+                        @DateTimeService.GetAbbreviatedMonthName(month)
                     </MudText>
                 </MudButton>
                 continue;
@@ -34,34 +32,9 @@
                        Class="rounded-0"
                        DisableElevation="true">
                 <MudText Typo="Typo.h6">
-                    @DateService.GetAbbreviatedMonthName(month)
+                    @DateTimeService.GetAbbreviatedMonthName(month)
                 </MudText>
             </MudButton>
         }
     </MudContainer>
 </div>
-
-@code {
-
-    private async Task SetMonth(DateTime month)
-    {
-        SelectedDate = month;
-        await SelectedDateChanged.InvokeAsync(month);
-    }
-
-    private async Task AddYearToDate()
-    {
-        var newDate = new DateTime(SelectedDate.Ticks).AddYears(1);
-        SelectedDate = newDate;
-        await SelectedDateChanged.InvokeAsync(newDate);
-        StateHasChanged();
-    }
-
-    private async Task SubtractYearFromDate()
-    {
-        var newDate = new DateTime(SelectedDate.Ticks).AddYears(-1);
-        SelectedDate = newDate;
-        await SelectedDateChanged.InvokeAsync(newDate);
-        StateHasChanged();
-    }
-}

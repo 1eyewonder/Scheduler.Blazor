@@ -1,5 +1,5 @@
-﻿@using MudBlazor.Utilities
-@typeparam T
+﻿@typeparam T
+@inherits MudComponentBase
 
 @{
     var column = "1fr";
@@ -8,11 +8,12 @@
         column += " 1fr";
     }
 
-    var myStyle = $"display: inline-grid; grid-template-columns: repeat({DaysInWeek}, minmax(0, 1fr));";
+    var myStyle = $"display: grid; grid-template-columns: repeat({DaysInWeek}, minmax(0, 1.25fr)); grid-template-rows: minmax(180px, 1fr);";
 
-    <MudContainer Style="@myStyle" 
-                  Class="pa-0"
-                  Fixed="true">
+    <MudContainer Style="@($"{myStyle} {Style}")"
+                  Class="@Class"
+                  Tag="@Tag"
+                  UserAttributes="@UserAttributes">
         @{
             for (var i = 0; i < DaysInWeek; i++)
             {
@@ -20,14 +21,16 @@
                 <SchedulerDay T="T"
                               Date="date"
                               AppointmentVariant="@AppointmentVariant"
-                              Appointments="@(Appointments
-                                                .Where(x => date >= x.Start &&
-                                                            date <= x.End)
-                                                .ToList())">
-
+                              AppointmentSpan="@AppointmentSpan"
+                              ScheduleView="@ScheduleView"
+                              Appointments="@(Appointments .Where(x => date.Day == x.Start.Day || date.Day == x.End.Day) .ToList())"
+                              AppointmentsChanged="@AppointmentsChanged"
+                              DayStartTime="@AdjustTime(date, DayStartTime)"
+                              DayEndTime="@AdjustTime(date, DayEndTime)"
+                              OnAppointmentClick="@OnAppointmentClick"
+                              OnDayClick="@OnDayClick">
                 </SchedulerDay>
             }
         }
     </MudContainer>
 }
-

@@ -29,14 +29,3 @@
         }
     }
 </MudContainer>
-
-
-@code {
-
-    private async Task SetYear(DateTime year)
-    {
-        SelectedDate = year;
-        await SelectedDateChanged.InvokeAsync(year);
-        await OnYearSelect.InvokeAsync(year);
-    }
-}

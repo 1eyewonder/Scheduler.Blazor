@@ -2,7 +2,7 @@
 
 namespace Scheduler.Blazor.Helpers
 {
-    public static class Extensions
+    public static class DateTimeExtensions
     {
         public static DateTime GetPrevious(this DateTime dt, 
             DayOfWeek dayOfWeek, 
@@ -36,10 +36,17 @@ namespace Scheduler.Blazor.Helpers
             return dt.AddDays(diff).Date;
         }
 
-        public static bool Overlaps<T>(this (T, T) dt, (T, T) other) 
-            where T : IComparable<T> =>
-            dt.Item1.CompareTo(other.Item2) <= 0 && 
-            other.Item1.CompareTo(dt.Item2) <= 0;
+        public static bool Overlaps<T>(this (T, T) dt,
+            (T, T) other, bool inclusive = true)
+            where T : IComparable<T>
+        {
+            return inclusive
+                ? dt.Item1.CompareTo(other.Item2) <= 0 &&
+                  other.Item1.CompareTo(dt.Item2) <= 0
+                : dt.Item1.CompareTo(other.Item2) < 0 &&
+                  other.Item1.CompareTo(dt.Item2) < 0;
+        }
+            
 
         public static bool Between<T>(this T item, 
             T start, 

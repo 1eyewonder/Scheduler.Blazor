@@ -5,12 +5,12 @@ using Scheduler.Blazor.Interfaces;
 
 namespace Scheduler.Blazor.Services
 {
-    public class DateService : IDateService
+    public class DateTimeService : IDateTimeService
     {
         private readonly CultureInfo _culture;
         private string _format;
 
-        public DateService()
+        public DateTimeService()
         {
             _format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
             _culture = CultureInfo.CurrentCulture;
@@ -35,6 +35,24 @@ namespace Scheduler.Blazor.Services
         {
             var calendarMonth = _culture.Calendar.GetMonth(month);
             return _culture.DateTimeFormat.AbbreviatedMonthNames[calendarMonth - 1];
+        }
+
+        public IEnumerable<DateTime> EveryXMinutesInDay(TimeSpan span, DateTime day)
+        {
+            var start = day.Date;
+            var end = start.AddDays(1).AddTicks(-1);
+            for (var time = start; time.Date <= end.Date; time = time.AddTicks(span.Ticks))
+            {
+                yield return time;
+            }
+        }
+
+        public IEnumerable<DateTime> EveryXMinutesInTimeSpan(TimeSpan span, DateTime start, DateTime end)
+        {
+            for (var time = start; time.Date <= end.Date; time = time.AddTicks(span.Ticks))
+            {
+                yield return time;
+            }
         }
     }
 }

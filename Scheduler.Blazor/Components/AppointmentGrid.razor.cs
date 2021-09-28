@@ -1,31 +1,23 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Scheduler.Blazor.Enums;
+using Scheduler.Blazor.EventArgs;
 using Scheduler.Blazor.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Web;
-using Scheduler.Blazor.EventArgs;
 
 namespace Scheduler.Blazor.Components
 {
-    public partial class SchedulerDay<T> where T : IAppointment
+    public partial class AppointmentGrid<T> : MudComponentBase where T : IAppointment
     {
+        [Inject] private IDateTimeService DateTimeService { get; set; }
+
+        [Parameter] public List<T> Appointments { get; set; } = new();
         [Parameter] public DateTime Date { get; set; }
-        [Parameter] public IList<T> Appointments { get; set; }
-        [Parameter] public EventCallback<IList<T>> AppointmentsChanged { get; set; }
-        [Parameter] public int MaxVisibleAppointments { get; set; } = 5;
-        [Parameter] public Variant AppointmentVariant { get; set; } = Variant.Filled;
-        [Parameter] public Color Color { get; set; } = Color.Primary;
-        [Parameter] public EScheduleView ScheduleView { get; set; } = EScheduleView.Calendar;
         [Parameter] public DateTime? DayStartTime { get; set; }
         [Parameter] public DateTime? DayEndTime { get; set; }
         [Parameter] public EventCallback<AppointmentClickArgs<T>> OnAppointmentClick { get; set; }
-        [Parameter] public EventCallback<DateClickArgs> OnDayClick { get; set; }
-
-        [Inject] private IDateTimeService DateTimeService { get; set; }
 
         private TimeSpan _appointmentSpan;
 
@@ -46,13 +38,21 @@ namespace Scheduler.Blazor.Components
             }
         }
 
-        private bool _initialized;
-
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _initialized = true;
+            _timeCoverage = GetSchedulerTimeSlots();
+            _myStyle = "display: grid; " +
+                       $"grid-template-rows: repeat({_timeCoverage.Count}, minmax(0, 1fr));" +
+                       "grid-template-columns: 1fr 2fr;";
         }
 
+        private string _myStyle;
+        private List<DateTime> _timeCoverage = new();
+
+        /// <summary>
+        /// Gets the DateTimes for each timespan between the start and end day times
+        /// </summary>
+        /// <returns></returns>
         private List<DateTime> GetSchedulerTimeSlots()
         {
             List<DateTime> timeCoverage;
@@ -88,15 +88,6 @@ namespace Scheduler.Blazor.Components
             }
 
             return timeCoverage;
-        }
-
-        private async Task Click(MouseEventArgs e)
-        {
-            await OnDayClick.InvokeAsync(new DateClickArgs
-            {
-                Date = Date,
-                MouseEventArgs = e
-            });
         }
     }
 }

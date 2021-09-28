@@ -1,0 +1,20 @@
+﻿@typeparam T
+@inherits MudComponentBase
+
+<MudButton Variant="@Variant"
+           Color="@Color"
+           FullWidth="true"
+           Style="@Style"
+           DisableElevation="true"
+           DisableRipple="true"
+           Class="@Class"
+           Tag="@Tag"
+           UserAttributes="@UserAttributes"
+           OnClick="@(async(e) => await Click(Appointment, e))">
+
+    <MudText Align="Align.Center" 
+             Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        @ChildContent
+    </MudText>
+
+</MudButton>

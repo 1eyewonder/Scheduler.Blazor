@@ -1,32 +1,78 @@
 ﻿@page "/"
+@using Scheduler.Blazor.Enums
+@using Scheduler.Blazor.Helpers
+
+@inject ISnackbar _snack
+@inject IDialogService _dialog
+@inject IAppointmentService<Appointment> _appointmentService
 
 <SchedulerMonth T="Appointment"
-                Appointments="appointments"
-                AppointmentVariant="Variant.Text"
-                SelectedDate="DateTime.Now" />
+                @bind-Appointments="@_appointments"
+                AppointmentVariant="Variant.Outlined"
+                SelectedDate="DateTime.Now" 
+                OnAppointmentClick="@(e => AppointmentClick(e.Appointment))"
+                OnDayClick="@(e => DayClick(e.Date))"/>
+
+<br/>
+<br/>
+<br/>
+
+<SchedulerWeek T="Appointment"
+               WeekType="@EWeekType.FullWeek"
+               FirstSundayOfWeek="@(DateTime.Now.GetPrevious(DayOfWeek.Sunday))"
+               AppointmentVariant="Variant.Filled"
+               AppointmentSpan="@TimeSpan.FromMinutes(30)"
+               @bind-Appointments="@_appointments"
+               ScheduleView="EScheduleView.Appointment"
+               OnAppointmentClick="@(e => AppointmentClick(e.Appointment))"
+               OnDayClick="@(e => DayClick(e.Date))"
+               DayStartTime="@(new DateTime(2021, 10, 1, 8, 0 ,0))"
+               DayEndTime="@(new DateTime(2021, 10, 1, 20, 0 ,0))">
+</SchedulerWeek>
 
 @code{
 
-    IList<IAppointment> appointments = new List<IAppointment>
-{
-            new Appointment { Start = DateTime.Today.AddDays(-6), End = DateTime.Today.AddDays(-5), Title = "BirthdayBirthdayBirthdayBirthdayBirthday"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
-            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Day off"},
-            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Something else", Color = Color.Secondary},
-            new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Something else 2"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(2), Title = "Something else 3"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(4), Title = "Something else 4"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(5), Title = "Something else 5"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(5), Title = "Something else 6"},
-            new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(6), Title = "Something else 7"},
-            //new AppointmentData { Start = DateTime.Today.AddDays(-10), End = DateTime.Today.AddDays(-8), Text = "Work from home" },
-            //new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(12), Text = "Online meeting" },
-            //new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(13), Text = "Skype call" },
-            //new AppointmentData { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(14).AddMinutes(30), Text = "Dentist appointment" },
-            //new AppointmentData { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
+    static DateTime _referenceTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 8, 0, 0);
+    IList<Appointment> _appointments = new List<Appointment>
+    {
+        // For weekly scheduler
+        new Appointment { Start = _referenceTime, End = _referenceTime.AddMinutes(30), Title = "Post Office" },
+        new Appointment { Start = _referenceTime.AddMinutes(30), End = _referenceTime.AddMinutes(60), Title = "Dentist" },
+        new Appointment{Start = _referenceTime.AddHours(3), End = _referenceTime.AddHours(4).AddMinutes(30), Title = "Birthday"}
+
+        // For monthly scheduler
+        //new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+        //new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+        //new Appointment { Start = DateTime.Today, End = DateTime.Today.AddDays(1), Title = "Birthday"},
+        //new Appointment { Start = DateTime.Today.AddDays(3), End = DateTime.Today.AddDays(3), Title = "Day off"},
+    };
+
+    private async Task DayClick(DateTime date)
+    {
+        //_snack.Add($"Hello from {date.ToString("D")}", configure: x => x.RequireInteraction = false);
+
+        var parameters = new DialogParameters
+        {
+            { "EndTimeEditable", true }
         };
 
+        var (newAppointment, cancelled) = await _appointmentService.CreateAppointment(_appointments, date, parameters);
+        if (!cancelled)
+        {
+            _appointments.Add(newAppointment);
+        }
+    }
+
+    private async Task AppointmentClick(Appointment appointment)
+    {
+        //_snack.Add($"{appointment.Title}: Start Time: {appointment.Start.ToShortTimeString()} End Time: {appointment.End.ToShortTimeString()}", 
+        //    configure: x => x.RequireInteraction = false);
+
+        var (newAppointment, cancelled) = await _appointmentService.EditAppointment(_appointments, (Appointment)appointment);
+        if (!cancelled)
+        {
+            _appointments.Remove(appointment);
+            _appointments.Add(newAppointment);
+        }
+    }
 }

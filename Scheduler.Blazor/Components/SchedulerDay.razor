@@ -1,25 +1,22 @@
 ﻿@typeparam T
-@inherits MudBlazor.MudBaseButton
-@inject ISnackbar _snackbar
 
-<MudCard Square="true"
-         Outlined="true"
-         Elevation="0">
+<MudPaper Class="d-flex flex-column"
+          Outlined="true"
+          Elevation="0"
+          Square="true">
 
-    <MudCardHeader Class="px-0">
-        <MudButton OnClick="@(() => _snackbar.Add($"Hello from {Date.ToString("M")}"))"
-                   DisableElevation="true"
-                   Class="px-0">
-            <MudText Class="px-0">
-                @Date.Day
-            </MudText>
-        </MudButton>
-    </MudCardHeader>
+    <SchedulerDayHeader Class="d-flex align-top pl-2" Date="Date"/>
 
-    <MudCardContent Class="pa-0 ma-0">
-        <MudGrid Spacing="0"
-                 Class="d-flex d-flex align-top">
-                @{
+    <MudButton DisableElevation="true"
+               DisableRipple="true"
+               FullWidth="true"
+               Class="py-5 d-flex flex-grow-1"
+               OnClick="@(async(e) => await Click(e))">
+
+        <MudGrid>
+            @{
+                if (ScheduleView == EScheduleView.Calendar)
+                {
                     var appointmentCount = 1;
                     foreach (var appointment in Appointments)
                     {
@@ -27,39 +24,47 @@
                         {
                             // Show more
                             <MudItem xs="12" Class="my-0">
-                                <MudButton Variant="@AppointmentVariant"
-                                           Color="@appointment.Color"
-                                           FullWidth="true"
-                                           DisableElevation="true"
-                                           Class="rounded-0 d-flex flex-shrink-1"
-                                           OnClick="@(() => _snackbar.Add($"Hello from the show more on {Date.ToString("M")}"))">
-                                    <MudText Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        Show More + (@(Appointments.Count - MaxVisibleAppointments))
-                                    </MudText>
-                                </MudButton>
+                                <AppointmentSlot T="T"
+                                                 Appointment="@appointment"
+                                                 Class="rounded-0 d-flex"
+                                                 Color="@Color"
+                                                 OnClick="@OnAppointmentClick"
+                                                 Variant="@AppointmentVariant">
+                                    Show More + (@(Appointments.Count - MaxVisibleAppointments))
+                                </AppointmentSlot>
                             </MudItem>
 
                             break;
                         }
 
                         <MudItem xs="12" Class="my-0">
-                            <MudButton Variant="@AppointmentVariant"
-                                       Color="@appointment.Color"
-                                       FullWidth="true"
-                                       DisableElevation="true"
-                                       Class="rounded-0 d-flex flex-shrink-1"
-                                       OnClick="@(() => _snackbar.Add($"Hello from {appointment.Title} on {Date.ToString("M")}"))">
-                                <MudText Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    @appointment.Title
-                                </MudText>
-                                
-                            </MudButton>
+                            <AppointmentSlot T="T"
+                                             Appointment="@appointment"
+                                             Class="rounded-0 d-flex"
+                                             Color="@Color"
+                                             OnClick="@OnAppointmentClick"
+                                             Variant="@AppointmentVariant">
+                                @appointment.Title
+                            </AppointmentSlot>
                         </MudItem>
+
                         appointmentCount++;
                     }
                 }
-            </MudGrid>
-    </MudCardContent>
-</MudCard>
-
-
+                else
+                {
+                    if (AppointmentSpan.Minutes != 0)
+                    {
+                        <AppointmentGrid T="T"
+                                         Appointments="@Appointments.ToList()"
+                                         AppointmentSpan="@AppointmentSpan"
+                                         OnAppointmentClick="@OnAppointmentClick"
+                                         DayStartTime="@DayStartTime"
+                                         DayEndTime="@DayEndTime"
+                                         Date="@Date"/>
+                    }
+                }
+            }
+        </MudGrid>
+    </MudButton>
+</MudPaper>

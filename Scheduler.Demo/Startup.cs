@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
+using Scheduler.Blazor;
+using Scheduler.Blazor.Helpers;
 using Scheduler.Blazor.Interfaces;
 using Scheduler.Blazor.Services;
 using Scheduler.Demo.Data;
@@ -26,7 +28,7 @@ namespace Scheduler.Demo
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddScoped<IDateService, DateService>();
+            services.AddBlazorScheduler<Appointment>();
             services.AddMudServices(options =>
             {
                 options.SnackbarConfiguration.PreventDuplicates = true;
