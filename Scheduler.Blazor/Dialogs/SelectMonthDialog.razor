@@ -3,7 +3,8 @@
         @if (_openTo == OpenTo.Year)
         {
             <YearPicker @bind-SelectedDate="@SelectedDate" 
-                        OnYearSelect="ShowMonth"/>
+                        OnYearSelect="ShowMonth"
+                        Variant="Variant.Outlined"/>
         }
         else
         {

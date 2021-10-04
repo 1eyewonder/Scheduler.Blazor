@@ -1,39 +1,43 @@
-﻿@inherits LayoutComponentBase
+﻿@using Scheduler.Blazor.Helpers
+@inherits LayoutComponentBase
 
-<div class="page">
-    @*<div class="sidebar">
+@if (MyDarkTheme is not null)
+{
+    <div class="page">
+        @*<div class="sidebar">
         <NavMenu />
     </div>*@
 
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+        <div class="main">
+            <div class="top-row px-4">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </div>
 
-        <div class="content px-4">
-            @Body
+            <div class="content px-4">
+                @Body
+            </div>
         </div>
     </div>
-</div>
 
-<MudThemeProvider Theme="MyDarkTheme" />
-<MudDialogProvider />
-<MudSnackbarProvider />
+    <MudThemeProvider Theme="MyDarkTheme" />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+}
 
 @code
 {
     private bool _themeManagerOpen;
     bool _drawerOpen;
 
-    MudTheme MyDarkTheme { get; set; }
+    [CascadingParameter] MudTheme MyDarkTheme { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Run(() =>
         {
-            MyDarkTheme = new MudTheme()
+            MyDarkTheme = new MudTheme
             {
-                Palette = new Palette()
+                Palette = new Palette
                 {
                     AppbarBackground = "#27272f",
                     AppbarText = "rgba(255,255,255, 0.70)",

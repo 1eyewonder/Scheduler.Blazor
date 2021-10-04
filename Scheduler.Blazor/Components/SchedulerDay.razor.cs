@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Utilities;
 using Scheduler.Blazor.EventArgs;
+using Scheduler.Blazor.Helpers;
 
 namespace Scheduler.Blazor.Components
 {

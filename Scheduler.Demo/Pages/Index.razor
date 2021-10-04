@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Scheduler.Blazor.Enums
 @using Scheduler.Blazor.Helpers
+@using Scheduler.Blazor.Dialogs
 
 @inject ISnackbar _snack
 @inject IDialogService _dialog
@@ -51,15 +52,15 @@
     {
         //_snack.Add($"Hello from {date.ToString("D")}", configure: x => x.RequireInteraction = false);
 
-        var parameters = new DialogParameters
+        var response = await _appointmentService.CreateAppointment(_appointments, date);
+        if (!response.Cancelled && !response.Error)
         {
-            { "EndTimeEditable", true }
-        };
+            _appointments.Add(response.Appointment);
+        }
 
-        var (newAppointment, cancelled) = await _appointmentService.CreateAppointment(_appointments, date, parameters);
-        if (!cancelled)
+        if (response.Error)
         {
-            _appointments.Add(newAppointment);
+            _snack.Add(response.Message, Severity.Error);
         }
     }
 
@@ -68,11 +69,16 @@
         //_snack.Add($"{appointment.Title}: Start Time: {appointment.Start.ToShortTimeString()} End Time: {appointment.End.ToShortTimeString()}", 
         //    configure: x => x.RequireInteraction = false);
 
-        var (newAppointment, cancelled) = await _appointmentService.EditAppointment(_appointments, (Appointment)appointment);
-        if (!cancelled)
+        var response = await _appointmentService.EditAppointment(_appointments, appointment);
+        if (!response.Cancelled && !response.Error)
         {
             _appointments.Remove(appointment);
-            _appointments.Add(newAppointment);
+            _appointments.Add(response.Appointment);
+        }
+
+        if (response.Error)
+        {
+            _snack.Add(response.Message, Severity.Error);
         }
     }
 }

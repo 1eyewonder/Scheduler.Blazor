@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using MudBlazor.Utilities;
 using Scheduler.Blazor.EventArgs;
+using Scheduler.Blazor.Helpers;
 using Scheduler.Blazor.Interfaces;
 
 namespace Scheduler.Blazor.Components

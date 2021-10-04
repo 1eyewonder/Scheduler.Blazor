@@ -1,0 +1,44 @@
+﻿@typeparam T
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string"
+                      Label="Appointment Name"
+                      @bind-Text="Appointment.Title"/>
+
+        <MudDatePicker Label="Appointment Date"
+                       Date="Appointment.Start"
+                       DateChanged="UpdateDate"/>
+
+        <MudTimePicker Label="Appointment Start Time"
+                       Time="Appointment.Start.TimeOfDay"
+                       TimeChanged="UpdateStartTime"
+                       AmPm="true"/>
+
+        <MudTimePicker Label="Appointment End Time"
+                       Time="Appointment.End.TimeOfDay"
+                       TimeChanged="UpdateEndTime"
+                       AmPm="true"/>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@ConfirmAppointment"
+                   Color="Color.Primary"
+                   Class="my-2"
+                   FullWidth="true">
+
+            <MudText Typo="Typo.h5">
+                Confirm
+            </MudText>
+        </MudButton>
+        <MudButton OnClick="@CancelCreation"
+                   Color="Color.Primary"
+                   Class="my-2"
+                   FullWidth="true">
+
+            <MudText Typo="Typo.h5">
+                Cancel
+            </MudText>
+        </MudButton>
+    </DialogActions>
+</MudDialog>

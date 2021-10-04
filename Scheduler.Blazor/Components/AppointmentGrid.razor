@@ -49,10 +49,11 @@
         foreach (var appointment in appointmentsInCoverage)
         {
             int firstRow;
+            int lastRow;
 
             // Overlaps
             if (!appointment.Start.Between(_timeCoverage.First(), _timeCoverage.Last()) &&
-                     appointment.End.Between(_timeCoverage.First(), _timeCoverage.Last()))
+             appointment.End.Between(_timeCoverage.First(), _timeCoverage.Last()))
             {
                 firstRow = appointment.Start.Minute / AppointmentSpan.Minutes + 1;
             }
@@ -62,25 +63,6 @@
             {
                 firstRow = 60 / AppointmentSpan.Minutes * (appointment.Start.Hour - _timeCoverage.First().Hour) + (appointment.Start.Minute - _timeCoverage.First().Minute)/ AppointmentSpan.Minutes + 1;
             }
-
-            //if (appointment.Start.Hour < _timeCoverage.First().Hour)
-            //{
-            //    firstRow = appointment.Start.Minute / AppointmentSpan.Minutes + 1;
-            //}
-            //else
-            //{
-            //    firstRow = 60 / AppointmentSpan.Minutes * (appointment.Start.Hour - _timeCoverage.First().Hour) + appointment.Start.Minute / AppointmentSpan.Minutes + 1;
-            //}
-
-            int lastRow;
-            //if (appointment.End.Hour > _timeCoverage.Last().Hour)
-            //{
-            //    lastRow = 60 / AppointmentSpan.Minutes * (_timeCoverage.Last().Hour - _timeCoverage.First().Hour) + appointment.End.Minute / AppointmentSpan.Minutes + 1;
-            //}
-            //else
-            //{
-            //    lastRow = 60 / AppointmentSpan.Minutes * (appointment.End.Hour - _timeCoverage.First().Hour) + appointment.End.Minute / AppointmentSpan.Minutes + 1;
-            //}
 
             // Overlaps
             if (appointment.End > _timeCoverage.Last())

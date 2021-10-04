@@ -1,10 +1,12 @@
 ﻿using MudBlazor;
 using Scheduler.Blazor.Dialogs;
 using Scheduler.Blazor.Interfaces;
+using Scheduler.Blazor.Models;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
-using Scheduler.Blazor.Models;
+using Scheduler.Blazor.Helpers;
 
 namespace Scheduler.Blazor.Services
 {
@@ -13,14 +15,18 @@ namespace Scheduler.Blazor.Services
     {
         private readonly IDialogService _dialogService;
 
+        private static DialogOptions Options => new()
+        {
+            FullWidth = true
+        };
+
         public AppointmentService(IDialogService dialogService)
         {
             _dialogService = dialogService;
         }
 
         public async Task<AppointmentResponse<T>> CreateAppointment(IList<T> scheduledAppointments,
-            DateTime initialDate,
-            DialogParameters dialogParameters)
+            DateTime initialDate, DialogOptions options = null)
         {
             var parameters = new DialogParameters
             {
@@ -37,31 +43,18 @@ namespace Scheduler.Blazor.Services
                 }
             };
 
-            if (dialogParameters is not null)
-            {
-                foreach (var (key, value) in dialogParameters)
-                {
-                    parameters.Add(key, value);
-                }
-            }
-
-            var dialog = _dialogService.Show<AppointmentDialog<T>>("Edit Appointment",
+            var dialog = _dialogService.Show<CreateAppointmentDialog<T>>("Create Appointment",
                 parameters,
-                new DialogOptions
-                {
-                    FullWidth = true
-                });
+                options ?? Options);
 
             var result = await dialog.Result;
-
-            return result.Cancelled 
-                ? new AppointmentResponse<T>(null, true) 
-                : new AppointmentResponse<T>((T)result.Data, false);
+            return result.Cancelled
+                ? new AppointmentResponse<T>(null, true)
+                : (AppointmentResponse<T>)result.Data;
         }
 
         public async Task<AppointmentResponse<T>> EditAppointment(IList<T> scheduledAppointments,
-            IAppointment appointment,
-            DialogParameters dialogParameters)
+            IAppointment appointment, DialogOptions options = null)
         {
             var parameters = new DialogParameters();
             var dtoAppointment = new Appointment
@@ -75,27 +68,15 @@ namespace Scheduler.Blazor.Services
             parameters.Add("Appointment", dtoAppointment);
             parameters.Add("ScheduledAppointments", scheduledAppointments);
 
-            if (dialogParameters is not null)
-            {
-                foreach (var (key, value) in dialogParameters)
-                {
-                    parameters.Add(key, value);
-                }
-            }
-
-            var dialog = _dialogService.Show<AppointmentDialog<T>>(
+            var dialog = _dialogService.Show<EditAppointmentDialog<T>>(
                 "Edit Appointment",
                 parameters,
-                new DialogOptions
-                {
-                    FullWidth = true
-                });
+                options ?? Options);
 
             var result = await dialog.Result;
-
-            return result.Cancelled 
-                ? new AppointmentResponse<T>(null, true) 
-                : new AppointmentResponse<T>((T)result.Data, false);
+            return result.Cancelled
+                ? new AppointmentResponse<T>(null, true)
+                : (AppointmentResponse<T>)result.Data;
         }
     }
 }

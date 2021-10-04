@@ -19,10 +19,9 @@
         <MudTimePicker Label="Appointment End Time"
                        Time="Appointment.End.TimeOfDay"
                        TimeChanged="UpdateEndTime"
-                       AmPm="true" 
-                       Disabled="@(!EndTimeEditable)"/>
+                       AmPm="true"
+                       Disabled="@(!EndTimeEditable)" />
 
-        @ChildContent
     </DialogContent>
 
     <DialogActions>
