@@ -5,8 +5,7 @@
 <MudContainer Style="@($"{Style} {_myStyle}")"
               Class="@($"{Class} px-1")"
               Tag="@Tag"
-              UserAttributes="@UserAttributes"
-              Fixed="true">
+              UserAttributes="@UserAttributes">
     @{
         var i = 0;
 
@@ -17,7 +16,7 @@
                             $"grid-row: {i + 1} / span 1;";
 
             var spaceStyle = "grid-column: 1 / 2; " +
-                             $"grid-row: {i + 1} / span 1;";
+                            $"grid-row: {i + 1} / span 1;";
 
             if (i == 0)
             {

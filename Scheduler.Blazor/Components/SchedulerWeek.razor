@@ -2,13 +2,7 @@
 @inherits MudComponentBase
 
 @{
-    var column = "1fr";
-    for (var i = 0; i < DaysInWeek - 1; i++)
-    {
-        column += " 1fr";
-    }
-
-    var myStyle = $"display: grid; grid-template-columns: repeat({DaysInWeek}, minmax(0, 1.25fr)); grid-template-rows: minmax(180px, 1fr);";
+    var myStyle = $"display: grid; grid-template-columns: repeat({DaysInWeek}, minmax(0, 1.25fr)); grid-template-rows: minmax(200px, 1fr);";
 
     <MudContainer Style="@($"{myStyle} {Style}")"
                   Class="@Class"
